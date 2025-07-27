@@ -17,7 +17,12 @@ export default function Result() {
 
   const recordAgreementMutation = useMutation({
     mutationFn: async (agreementData: { archetype: string; agreed: boolean }) => {
-      return apiRequest("/api/agreement", "POST", agreementData);
+      return apiRequest("POST", "/api/agreement", agreementData);
+    },
+    onError: (error) => {
+      console.error("Error recording agreement:", error);
+      // Still set agreed state even if recording fails
+      // This prevents the UI from being stuck
     },
   });
 
@@ -40,10 +45,13 @@ export default function Result() {
     setLocation('/');
   };
 
-  const handleAgreement = async (agrees: boolean) => {
+  const handleAgreement = (agrees: boolean) => {
     if (!result) return;
     
+    // Set UI state immediately for better UX
     setAgreed(agrees);
+    
+    // Record to database in background
     recordAgreementMutation.mutate({
       archetype: result.title,
       agreed: agrees
