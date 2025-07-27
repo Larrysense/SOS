@@ -1,22 +1,38 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import backgroundImage from "@assets/Untitled_1753600683302.jpg";
+import mainImage from "@assets/Untitled_1753600683302.jpg";
+import bg1 from "@assets/download (27)_1753600683305.jpeg";
+import bg2 from "@assets/download (28)_1753600683305.jpeg";
+import bg3 from "@assets/download (29)_1753600683304.jpeg";
+import bg4 from "@assets/download (30)_1753600683303.jpeg";
+import bg5 from "@assets/download (31) - Copy_1753600683304.jpeg";
 import { sessionManager } from "@/lib/session-manager";
 import { useAmbientAudio } from "@/hooks/use-ambient-audio";
-import TypewriterText from "@/components/typewriter-text";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
   const [showInitialChoice, setShowInitialChoice] = useState(false);
+  const [currentBgIndex, setCurrentBgIndex] = useState(0);
   const { startAudio } = useAmbientAudio();
+
+  const backgroundImages = [mainImage, bg1, bg2, bg3, bg4, bg5];
 
   useEffect(() => {
     // Reset session on landing
     sessionManager.reset();
     // Show initial choice buttons after typewriter animation
     const timer = setTimeout(() => setShowInitialChoice(true), 4000);
-    return () => clearTimeout(timer);
-  }, []);
+    
+    // Rotate background images every 3 seconds
+    const bgTimer = setInterval(() => {
+      setCurrentBgIndex(prev => (prev + 1) % backgroundImages.length);
+    }, 3000);
+    
+    return () => {
+      clearTimeout(timer);
+      clearInterval(bgTimer);
+    };
+  }, [backgroundImages.length]);
 
   const handleInitialChoice = (choice: 'suppress' | 'speak') => {
     sessionManager.setInitialChoice(choice);
@@ -31,29 +47,17 @@ export default function Landing() {
 
   return (
     <section className="min-h-screen flex items-center justify-center relative">
-      {/* Background using the provided blue image */}
+      {/* Rotating background images */}
       <div className="absolute inset-0 bg-midnight">
         <img 
-          src={backgroundImage} 
-          alt="Gothic Background" 
-          className="w-full h-full object-cover opacity-80" 
+          src={backgroundImages[currentBgIndex]} 
+          alt="Atmospheric Background" 
+          className="w-full h-full object-cover opacity-90 transition-opacity duration-1000" 
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-midnight/70 to-charcoal/90"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-midnight/50 to-charcoal/70"></div>
       </div>
       
       <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-        <h1 className="font-gothic text-5xl md:text-7xl font-semibold text-gold mb-8 animate-fade-in tracking-wider">
-          SENSE OF SELF
-        </h1>
-        <p className="font-pirata text-2xl md:text-3xl text-warm-gray mb-4 animate-fade-in" 
-           style={{ animationDelay: '0.5s' }}>
-          (SOS)
-        </p>
-        
-        <div className="font-garamond text-xl md:text-2xl text-warm-gray/90 mb-12 animate-fade-in leading-relaxed" 
-             style={{ animationDelay: '1s' }}>
-          <TypewriterText text="Traverse in this journey to explore the system that promises to guide us." />
-        </div>
         
         <div className="space-y-8 animate-fade-in" style={{ animationDelay: '2s' }}>
           <p className="font-garamond text-lg md:text-xl text-warm-gray/80 max-w-3xl mx-auto leading-relaxed">

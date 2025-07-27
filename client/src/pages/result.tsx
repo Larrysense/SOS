@@ -4,10 +4,20 @@ import { calculateResult } from "@/lib/archetypes";
 import { sessionManager } from "@/lib/session-manager";
 import type { Archetype } from "@/lib/archetypes";
 
+// Import result background images
+import bg1 from "@assets/download (27)_1753600683305.jpeg";
+import bg2 from "@assets/download (28)_1753600683305.jpeg";
+import bg3 from "@assets/download (29)_1753600683304.jpeg";
+import bg4 from "@assets/download (30)_1753600683303.jpeg";
+import bg5 from "@assets/download (31) - Copy_1753600683304.jpeg";
+
 export default function Result() {
   const [, setLocation] = useLocation();
   const [result, setResult] = useState<Archetype | null>(null);
   const [sessionData, setSessionData] = useState(sessionManager.getSession());
+  const [currentBgIndex, setCurrentBgIndex] = useState(0);
+
+  const backgroundImages = [bg1, bg2, bg3, bg4, bg5];
 
   useEffect(() => {
     const session = sessionManager.getSession();
@@ -21,7 +31,14 @@ export default function Result() {
     const calculatedResult = calculateResult(session);
     setResult(calculatedResult);
     setSessionData(session);
-  }, [setLocation]);
+
+    // Slow rotating background for result page
+    const bgTimer = setInterval(() => {
+      setCurrentBgIndex(prev => (prev + 1) % backgroundImages.length);
+    }, 5000);
+
+    return () => clearInterval(bgTimer);
+  }, [setLocation, backgroundImages.length]);
 
   const handleRestart = () => {
     sessionManager.reset();
@@ -73,7 +90,11 @@ export default function Result() {
   return (
     <section className="min-h-screen relative">
       <div className="absolute inset-0 bg-charcoal">
-        {/* Result background can be customized per archetype */}
+        <img 
+          src={backgroundImages[currentBgIndex]}
+          alt="Result Background" 
+          className="w-full h-full object-cover opacity-60 transition-opacity duration-2000" 
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-charcoal/80 to-midnight/90"></div>
       </div>
       
@@ -118,7 +139,7 @@ export default function Result() {
               onClick={handleShare}
               className="bg-gold/20 hover:bg-gold/30 border border-gold/50 hover:border-gold px-8 py-3 rounded font-garamond text-lg transition-all duration-300"
             >
-              Share Your Truth
+              Do You Agree?
             </button>
           </div>
         </div>
