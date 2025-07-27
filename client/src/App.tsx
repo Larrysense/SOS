@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Landing from "@/pages/landing";
 import Questionnaire from "@/pages/questionnaire";
 import Result from "@/pages/result";
+import Admin from "@/pages/admin";
 
 function Router() {
   return (
@@ -13,6 +14,7 @@ function Router() {
       <Route path="/" component={Landing} />
       <Route path="/questionnaire" component={Questionnaire} />
       <Route path="/result" component={Result} />
+      <Route path="/admin" component={Admin} />
     </Switch>
   );
 }
