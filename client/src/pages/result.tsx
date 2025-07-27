@@ -76,13 +76,12 @@ export default function Result() {
 
   return (
     <section className="min-h-screen relative">
-      <div className="absolute inset-0 bg-charcoal">
+      <div className="absolute inset-0">
         <img 
           src={resultBg}
           alt="Result Background" 
-          className="w-full h-full object-cover opacity-60" 
+          className="w-full h-full object-cover" 
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/80"></div>
       </div>
       
       <div className="relative z-10 min-h-screen flex items-center justify-center">
